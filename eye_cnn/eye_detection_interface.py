@@ -8,14 +8,29 @@ import time
 import json
 
 # ===== CONFIGURATION =====
-MODEL_PATH = 'C:/Users/Aravindan/CNN_MODEL/model/eye_detection_model.keras'
+import os
+
+# Get the current directory and set model path
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(CURRENT_DIR, 'model', 'eye_detection_model.keras')
+
+# Image processing settings
 IMG_HEIGHT = 128
 IMG_WIDTH = 128
 
-# Attentiveness thresholds
-DROWSY_THRESHOLD = 10     # Frames with closed eyes to trigger drowsy state (about 1 second at 30fps)
-SLEEPING_THRESHOLD = 30     # Frames with closed eyes to trigger sleeping state (about 3 seconds)
-DISTRACTED_THRESHOLD = 45   # Frames without face detection to trigger distracted state (about 2 seconds)
+# Face detection parameters
+MIN_FACE_SIZE = (60, 60)
+MAX_FACE_SIZE = (800, 800)
+FACE_SCALE_FACTOR = 1.1
+MIN_NEIGHBORS = 4
+
+# Eye detection confidence threshold
+EYE_CONFIDENCE_THRESHOLD = 0.70  # Higher threshold for more accurate eye closure detection
+
+# Attentiveness thresholds (adjusted for 30fps)
+DROWSY_THRESHOLD = 6      # About 0.2 seconds of closed eyes
+SLEEPING_THRESHOLD = 15    # About 0.5 seconds of closed eyes
+DISTRACTED_THRESHOLD = 30  # About 1 second without face
 
 class EyeDetectionMonitor:
     """
@@ -75,10 +90,19 @@ class EyeDetectionMonitor:
         frame = cv2.flip(frame, 1)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         
-        # Detect faces
+        # Apply Gaussian blur to reduce noise
+        gray = cv2.GaussianBlur(gray, (5, 5), 0)
+        
+        # Enhance contrast
+        gray = cv2.equalizeHist(gray)
+        
+        # Detect faces with adjusted parameters
         faces = self.face_cascade.detectMultiScale(
-            gray, scaleFactor=1.05, minNeighbors=5, 
-            minSize=(80, 80), maxSize=(500, 500)
+            gray, 
+            scaleFactor=FACE_SCALE_FACTOR, 
+            minNeighbors=MIN_NEIGHBORS,
+            minSize=MIN_FACE_SIZE,
+            maxSize=MAX_FACE_SIZE
         )
         
         # Keep only largest face
@@ -88,21 +112,24 @@ class EyeDetectionMonitor:
             self.no_face_count = 0
         else:
             self.no_face_count += 1
+            cv2.putText(frame, "No Face Detected", (30, 30),
+                       cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         
         # Process face if detected
         if len(faces) > 0:
             x, y, w, h = faces[0]
             cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
             
-            # Extract eye regions
-            eye_height = int(h * 0.35)
-            eye_y_start = y + int(h * 0.25)
+            # Improved eye region extraction
+            eye_height = int(h * 0.30)  # Slightly smaller eye height
+            eye_y_start = y + int(h * 0.28)  # Adjusted for better eye position
             
-            left_eye_x = x + int(w * 0.12)
-            left_eye_w = int(w * 0.35)
+            # Adjusted eye width and position
+            left_eye_x = x + int(w * 0.14)
+            left_eye_w = int(w * 0.30)
             
-            right_eye_x = x + int(w * 0.53)
-            right_eye_w = int(w * 0.35)
+            right_eye_x = x + int(w * 0.56)
+            right_eye_w = int(w * 0.30)
             
             eye_regions = [
                 ("Left", left_eye_x, eye_y_start, left_eye_w, eye_height),
@@ -119,53 +146,106 @@ class EyeDetectionMonitor:
                 if eye_img.size == 0:
                     continue
                 
-                # Enhance image
+                # Enhanced image preprocessing
                 eye_gray = cv2.cvtColor(eye_img, cv2.COLOR_BGR2GRAY)
+                
+                # Apply multiple enhancements
                 eye_enhanced = cv2.equalizeHist(eye_gray)
+                eye_enhanced = cv2.GaussianBlur(eye_enhanced, (3, 3), 0)
+                
+                # Increase contrast
+                eye_enhanced = cv2.convertScaleAbs(eye_enhanced, alpha=1.3, beta=0)
+                
                 eye_img_final = cv2.cvtColor(eye_enhanced, cv2.COLOR_GRAY2BGR)
                 
+                # Prepare for model
                 eye_img_resized = cv2.resize(eye_img_final, (IMG_WIDTH, IMG_HEIGHT))
                 eye_img_normalized = eye_img_resized / 255.0
                 eye_img_expanded = np.expand_dims(eye_img_normalized, axis=0)
                 
-                # Predict
+                # Calculate eye aspect ratio (EAR)
+                eye_height, eye_width = eye_enhanced.shape
+                aspect_ratio = float(eye_height) / float(eye_width)
+                
+                # Predict with enhanced confidence check
                 prediction = self.model.predict(eye_img_expanded, verbose=0)[0][0]
                 
-                if prediction > 0.6:
+                # Use both aspect ratio and prediction for more accurate detection
+                is_closed = (prediction <= EYE_CONFIDENCE_THRESHOLD) or (aspect_ratio < 0.2)
+                
+                if not is_closed:
                     status = "OPEN"
+                    confidence = int(prediction * 100)
                     color = (0, 255, 0)
                     eye_statuses.append(True)
                 else:
                     status = "CLOSED"
+                    confidence = int((1 - prediction) * 100)
                     color = (0, 0, 255)
                     eye_statuses.append(False)
                 
-                cv2.putText(frame, f"{eye_name}: {status}", 
+                # Show eye status with improved positioning
+                # Left side for eye name
+                cv2.putText(frame, f"{eye_name}:", 
+                           (ex, ey-25), 
+                           cv2.FONT_HERSHEY_SIMPLEX, 
+                           0.5, color, 1)
+                
+                # Right side for status and confidence
+                cv2.putText(frame, f"{status} ({confidence}%)", 
                            (ex, ey-10), 
                            cv2.FONT_HERSHEY_SIMPLEX, 
-                           0.4, color, 1)
+                           0.5, color, 1)
             
-            # Update counters with smoothing
+            # Update counters with more responsive state management
             if len(eye_statuses) >= 2:
-                if not any(eye_statuses):  # Both eyes closed
+                closed_eyes = sum(not status for status in eye_statuses)
+                
+                if closed_eyes >= 2:  # Both eyes closed
+                    self.closed_count += 2
+                    self.open_count = 0  # Reset open counter
+                elif closed_eyes == 1:  # One eye closed
                     self.closed_count += 1
-                    self.open_count = 0
-                else:  # At least one eye open
+                    self.open_count = 0  # Reset open counter
+                else:  # Both eyes open
                     self.open_count += 1
-                    if self.open_count >= 1:
+                    # Quick reset of closed counter when eyes are definitely open
+                    if self.open_count >= 2:
                         self.closed_count = 0
+            
+            # Add debug information with more details
+            status_color = (0, 0, 255) if self.closed_count > DROWSY_THRESHOLD else (255, 255, 255)
+            cv2.putText(frame, f"Closed frames: {self.closed_count}", 
+                       (10, frame.shape[0] - 60), 
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.6, status_color, 2)
         
-        # Determine state based on thresholds
+        # Determine state based on thresholds with more aggressive state changes
         previous_state = self.current_state
         
         if self.no_face_count > DISTRACTED_THRESHOLD:
             self.current_state = "DISTRACTED"
+            cv2.putText(frame, "WARNING: Face not detected!", 
+                       (frame.shape[1]//2 - 150, 30), 
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
         elif self.closed_count > SLEEPING_THRESHOLD:
             self.current_state = "SLEEPING"
+            cv2.putText(frame, "ALERT: Subject is Sleeping!", 
+                       (frame.shape[1]//2 - 150, 60), 
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
+            # Add an additional alert box
+            cv2.rectangle(frame, (50, 40), (frame.shape[1]-50, 80), (0, 0, 255), 2)
+            if self.current_state != "SLEEPING":
+                self.sleeping_events += 1
         elif self.closed_count > DROWSY_THRESHOLD:
             self.current_state = "DROWSY"
-        else:
+            cv2.putText(frame, "Warning: Getting Drowsy!", 
+                       (frame.shape[1]//2 - 150, 90), 
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 165, 255), 2)
+            if self.current_state != "DROWSY":
+                self.drowsy_events += 1
+        elif self.open_count >= 2:  # Reduced threshold for attentive state
             self.current_state = "ATTENTIVE"
+            self.closed_count = 0  # Reset closed count when definitely attentive
         
         # Track state changes and events
         if previous_state != self.current_state:
