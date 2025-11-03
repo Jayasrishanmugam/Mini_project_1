@@ -1,0 +1,277 @@
+# ============================================================================
+# AI English Speaking Interactive Training System - Complete Requirements
+# ============================================================================
+# Generated: 2025-11-03
+# Project: English Learning Platform with Posture & Eye Detection
+# Versions extracted from actual system installation
+#
+# Installation:
+#   pip install -r requirements.txt
+# ============================================================================
+
+# ============================================================================
+# Core Dependencies - Computer Vision & ML
+# ============================================================================
+opencv-python==4.8.1.78
+opencv-contrib-python==4.11.0.86
+numpy==1.24.3
+mediapipe==0.10.5
+Pillow==10.1.0
+
+# ============================================================================
+# Deep Learning - TensorFlow & Keras
+# ============================================================================
+tensorflow==2.13.0
+tensorflow-intel==2.13.0
+tensorflow-estimator==2.13.0
+tensorflow-io-gcs-filesystem==0.31.0
+keras==2.13.1
+protobuf==3.20.3
+
+# TensorFlow Dependencies
+tensorboard==2.13.0
+tensorboard-data-server==0.7.2
+absl-py==2.3.1
+astunparse==1.6.3
+flatbuffers==25.9.23
+gast==0.4.0
+google-pasta==0.2.0
+grpcio==1.74.0
+h5py==3.15.0
+libclang==18.1.1
+opt-einsum==3.4.0
+wrapt==1.14.2
+termcolor==3.1.0
+
+# Visualization & Data Analysis
+matplotlib==3.7.1
+seaborn==0.13.2
+pandas==2.0.3
+
+# ============================================================================
+# Machine Learning - PyTorch & Transformers
+# ============================================================================
+torch==2.1.0
+torchvision==0.23.0
+transformers==4.35.2
+tokenizers==0.15.2
+huggingface-hub==0.36.0
+safetensors==0.6.2
+
+# JAX (for advanced ML)
+jax==0.4.38
+jaxlib==0.4.38
+ml-dtypes==0.5.3
+optree==0.17.0
+
+# ============================================================================
+# Scientific Computing
+# ============================================================================
+scipy==1.11.3
+scikit-learn==1.7.2
+sympy==1.14.0
+networkx==3.4.2
+joblib==1.5.2
+threadpoolctl==3.6.0
+
+# ============================================================================
+# Speech Recognition & Audio Processing
+# ============================================================================
+SpeechRecognition==3.14.3
+PyAudio==0.2.14
+sounddevice==0.5.3
+
+# ============================================================================
+# Text-to-Speech (TTS) Solutions
+# ============================================================================
+edge-tts==7.2.3
+gTTS==2.5.4
+pygame==2.5.2
+pyttsx3==2.99
+
+# TTS Dependencies
+aiohttp==3.13.2
+aiohappyeyeballs==2.6.1
+aiosignal==1.4.0
+async-timeout==5.0.1
+attrs==25.4.0
+frozenlist==1.8.0
+multidict==6.7.0
+propcache==0.4.1
+yarl==1.22.0
+click==8.1.8
+
+# Windows TTS Support
+pywin32==311
+pypiwin32==223
+comtypes==1.4.13
+
+# ============================================================================
+# Video Player
+# ============================================================================
+python-vlc==3.0.21203
+
+# ============================================================================
+# Database - MySQL
+# ============================================================================
+mysql-connector-python==8.0.33
+PyMySQL==1.1.2
+
+# ============================================================================
+# Google AI & APIs
+# ============================================================================
+google-generativeai==0.8.5
+google-ai-generativelanguage==0.6.15
+google-api-core==2.28.0
+google-api-python-client==2.185.0
+google-auth==2.41.1
+google-auth-httplib2==0.2.0
+google-auth-oauthlib==1.0.0
+googleapis-common-protos==1.71.0
+grpcio-status==1.71.2
+proto-plus==1.26.1
+
+# ============================================================================
+# HTTP & Web
+# ============================================================================
+requests==2.32.5
+requests-oauthlib==2.0.0
+urllib3==2.5.0
+certifi==2025.8.3
+charset-normalizer==3.4.3
+idna==3.10
+httplib2==0.31.0
+uritemplate==4.2.0
+
+# ============================================================================
+# Authentication & Security
+# ============================================================================
+oauthlib==3.3.1
+pyasn1==0.6.1
+pyasn1-modules==0.4.2
+rsa==4.9.1
+cachetools==6.2.1
+
+# ============================================================================
+# Data Validation & Serialization
+# ============================================================================
+pydantic==2.12.3
+pydantic-core==2.41.4
+annotated-types==0.7.0
+typing-extensions==4.5.0
+typing-inspection==0.4.2
+
+# ============================================================================
+# Utilities & Tools
+# ============================================================================
+tqdm==4.67.1
+filelock==3.19.1
+fsspec==2025.9.0
+regex==2025.10.23
+sentencepiece==0.1.99
+PyYAML==6.0.3
+toml==0.10.2
+python-dotenv==1.2.1
+tabulate==0.9.0
+psutil==7.1.0
+
+# ============================================================================
+# UI & Visualization
+# ============================================================================
+PyQt5==5.15.11
+PyQt5-Qt5==5.15.2
+PyQt5-sip==12.17.0
+rich==14.2.0
+Pygments==2.19.2
+colorama==0.4.6
+
+# ============================================================================
+# Parsing & Templating
+# ============================================================================
+Jinja2==3.1.6
+MarkupSafe==3.0.3
+markdown-it-py==4.0.0
+mdurl==0.1.2
+Markdown==3.9
+
+# ============================================================================
+# Plotting & Charts
+# ============================================================================
+contourpy==1.3.2
+cycler==0.12.1
+fonttools==4.60.1
+kiwisolver==1.4.9
+pyparsing==3.2.5
+
+# ============================================================================
+# Date & Time
+# ============================================================================
+python-dateutil==2.9.0.post0
+pytz==2025.2
+tzdata==2025.2
+
+# ============================================================================
+# Data Processing
+# ============================================================================
+polars==1.34.0
+polars-runtime-32==1.34.0
+namex==0.1.0
+packaging==25.0
+Werkzeug==3.1.3
+
+# ============================================================================
+# Advanced Computer Vision (Ultralytics YOLO)
+# ============================================================================
+ultralytics==8.3.205
+ultralytics-thop==2.0.17
+
+# ============================================================================
+# Other Dependencies
+# ============================================================================
+cffi==2.23
+pycparser==2.23
+six==1.17.0
+
+# ============================================================================
+# Notes:
+# ============================================================================
+# 1. PyAudio installation on Windows may require:
+#    - pip install pipwin
+#    - pipwin install pyaudio
+#    OR download wheel from: https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyaudio
+#
+# 2. For TensorFlow GPU support (optional):
+#    - tensorflow-gpu==2.13.0
+#    - Requires CUDA 11.8 and cuDNN 8.6
+#
+# 3. MySQL Server must be installed separately:
+#    - Download from: https://dev.mysql.com/downloads/mysql/
+#    - Configure in lecture_gui/database.py
+#
+# 4. VLC Media Player should be installed for python-vlc:
+#    - Download from: https://www.videolan.org/vlc/
+#
+# 5. Some features require API keys (configure in respective files):
+#    - D-ID API: config.json
+#    - Google Gemini AI: lecture_gui/ai_config.py
+#
+# 6. PyWin32 and related packages are Windows-specific
+#    - On Linux/Mac, these will be skipped automatically
+#
+# 7. This requirements.txt includes ALL installed packages
+#    - For a minimal installation, see requirements-minimal.txt (if available)
+#
+# ============================================================================
+# Platform-Specific Notes:
+# ============================================================================
+# Windows:
+#   - pywin32, pypiwin32, comtypes are included for Windows support
+#   - winsound (included in Windows Python standard library)
+#   - Some packages may need Visual C++ Build Tools
+#
+# Linux/Mac:
+#   - May need to install portaudio: sudo apt-get install portaudio19-dev
+#   - May need to install python3-tk: sudo apt-get install python3-tk
+#   - Skip pywin32 packages (they won't install on non-Windows)
+#
+# ============================================================================

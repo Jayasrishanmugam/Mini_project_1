@@ -1,0 +1,159 @@
+# ============================================================================
+# .gitignore for AI English Speaking Interactive Training System
+# ============================================================================
+
+# ============================================================================
+# Python Virtual Environments (NOT NEEDED - running natively)
+# ============================================================================
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+.env/
+
+# ============================================================================
+# Python Cache & Compiled Files
+# ============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+
+# ============================================================================
+# IDE & Editor Files
+# ============================================================================
+# VS Code
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iml
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb
+
+# ============================================================================
+# System Files
+# ============================================================================
+# Windows
+Thumbs.db
+desktop.ini
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+.directory
+
+# ============================================================================
+# Project Specific Files
+# ============================================================================
+# TTS Cache (generated audio files)
+tts_cache/
+*.mp3
+*.wav
+
+# Session & Result Files
+posture_session_*.json
+lecture_*_results.json
+session_summaries.json
+user_progress.json
+
+# Log Files
+*.log
+*.txt.log
+ERROR_FIX_LOG.md
+
+# Temporary Files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+
+# ============================================================================
+# Database Files (if using SQLite)
+# ============================================================================
+*.db
+*.sqlite
+*.sqlite3
+
+# ============================================================================
+# API Keys & Secrets (IMPORTANT!)
+# ============================================================================
+# DO NOT commit these files with actual API keys
+# ai_config.py  # Uncomment if you want to exclude API keys
+# config.json   # Uncomment if it contains sensitive data
+
+# Backup config files
+*_backup.json
+*_backup.py
+
+# ============================================================================
+# Media Files (Large files)
+# ============================================================================
+# Videos
+# videos/
+# *.mp4
+# *.avi
+# *.mov
+# *.mkv
+
+# Avatars
+avatars/
+*.jpg
+*.jpeg
+*.png
+*.gif
+
+# Model Files (Large ML models)
+model/
+*.h5
+*.keras
+*.pt
+*.pth
+*.onnx
+*.pb
+
+# ============================================================================
+# Test & Coverage Files
+# ============================================================================
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# ============================================================================
+# Documentation Build Files
+# ============================================================================
+docs/_build/
+site/
+
+# ============================================================================
+# Package Manager Files
+# ============================================================================
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ============================================================================
+# Environment Variables
+# ============================================================================
+.env
+.env.local
+.env.*.local
+
+# ============================================================================
